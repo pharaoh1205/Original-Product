@@ -221,6 +221,8 @@ SNSやWebサイトで見つけた飲食店のスクショをもとに、店舗�
 - お店の検索方法の違い
 →文字入力かジャンルなどの選択方式
 対して本アプリは画像送信形式
+<img width="1260" height="2573" alt="image" src="https://github.com/user-attachments/assets/1af02f55-d50e-4a20-9264-0e20fdf69240" />
+
 
 ### **差別化のポイント**
 
