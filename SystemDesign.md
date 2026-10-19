@@ -1,10 +1,10 @@
 # 本アプリの設計
 
 ## 業務フロー
-<img width="1004" height="647" alt="image" src="https://github.com/user-attachments/assets/5fc5d860-e3da-42e6-bdc8-14673eb73680" />
+<img width="1154" height="665" alt="image" src="https://github.com/user-attachments/assets/213047c8-37f4-4407-810e-e7395ff01205" />
 
-## 画面遷移図・ワイヤーフレーム
-<img width="861" height="217" alt="image" src="https://github.com/user-attachments/assets/d42b1334-a4b9-4ac1-9911-c24d6eec35c7" />
+## 画面遷移図・ワイヤーフレーム ※下にあるのはモデルにしたアプリの画像です
+<img width="1198" height="739" alt="image" src="https://github.com/user-attachments/assets/01708185-f83b-454a-bcc6-7466438189cf" />
 
 ## テーブル定義書
 storesテーブル
