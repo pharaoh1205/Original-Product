@@ -4,10 +4,10 @@
 <img width="1154" height="665" alt="image" src="https://github.com/user-attachments/assets/213047c8-37f4-4407-810e-e7395ff01205" />
 
 ## 画面遷移図・ワイヤーフレーム ※下にあるのはモデルにしたアプリの画像です
-一覧表示画面
+一覧表示画面<br>
 <img width="784" height="356" alt="image" src="https://github.com/user-attachments/assets/c1da09c3-9142-4b00-8063-a6e049056fd3" />
 
-MAP表示画面
+MAP表示画面<br>
 <img width="583" height="498" alt="image" src="https://github.com/user-attachments/assets/e8807200-d674-4aa7-a923-3b51e6729c25" />
 
 登録画面
@@ -16,10 +16,10 @@ MAP表示画面
 お店の詳細画面
 <img width="969" height="378" alt="image" src="https://github.com/user-attachments/assets/2c442a20-fba7-49ae-8140-bef838162bed" />
 
-百名店画面
+百名店画面<br>
 <img width="651" height="625" alt="image" src="https://github.com/user-attachments/assets/742283bd-8338-4dc0-83bb-7bc572948e7c" />
 
-アカウント
+アカウント<br>
 <img width="736" height="547" alt="image" src="https://github.com/user-attachments/assets/5186ddd2-fac5-49da-8557-7ac1b118ee04" />
 
 
