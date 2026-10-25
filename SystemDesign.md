@@ -34,4 +34,5 @@ usersテーブル
 <img width="986" height="205" alt="image" src="https://github.com/user-attachments/assets/878b770c-56b3-4c78-9d82-304ce591a53c" />
 
 ## システム構成図
-<img width="1104" height="497" alt="image" src="https://github.com/user-attachments/assets/501f1aad-0085-4efa-8fa0-9ffe1bf65ee9" />
+<img width="850" height="477" alt="image" src="https://github.com/user-attachments/assets/9d66e637-5c36-4f67-bf31-49ef6e901e3a" />
+
