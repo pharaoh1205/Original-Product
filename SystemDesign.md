@@ -36,3 +36,8 @@ usersテーブル
 ## システム構成図
 <img width="850" height="477" alt="image" src="https://github.com/user-attachments/assets/9d66e637-5c36-4f67-bf31-49ef6e901e3a" />
 
+
+## HTTPエンドポイント図
+<img width="750" height="1400" alt="image" src="https://github.com/user-attachments/assets/f9f8486b-7a24-4b0c-8f17-2f1b1c26734b" />
+
+
