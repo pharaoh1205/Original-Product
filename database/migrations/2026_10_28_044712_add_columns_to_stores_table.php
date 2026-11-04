@@ -53,6 +53,7 @@ return new class extends Migration
     }
 
     public function down(): void
+    // down()：変更を戻す処理(マイグレーションをロールバックするときに呼ばれるメソッド)
     {
         Schema::table('stores', function (Blueprint $table) {
             $table->dropUnique('stores_user_id_place_id_unique');
