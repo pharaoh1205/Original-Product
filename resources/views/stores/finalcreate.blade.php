@@ -43,8 +43,6 @@
         <form action="{{ route('stores.store') }}" method="POST" class="max-w-xl w-full">
             @csrf
 
-            <!-- {{-- ★【追加①】前の画面から引き継いだ一時パス（temp_path）を保持する隠しフィールド --}}
-            <input type="hidden" name="temp_path" id="temp_path" value="{{ request('temp_path') }}"> -->
 
             {{-- ▼ ここに一時パスを保持する隠しフィールドを追加 --}}
             <input type="hidden" name="temp_path" value="{{ $tempPath ?? '' }}">
@@ -60,8 +58,6 @@
                     <span class="text-xl font-medium">アップしたスクショ写真</span>
                 </div>
 
-                {{-- 隠しフィールドにも temp_path を持たせておく（保存処理用） --}}
-                <input type="hidden" name="temp_path" value="{{ $tempPath ?? '' }}">
             </div>
 
             <!-- 基本情報セクション -->

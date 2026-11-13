@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Store extends Model
 {
     use HasFactory;
-    
+
     // DB保存を許可する項目（手動登録で使う４項目＋画像パスなど）
     protected $fillable = [
         'store_name',
@@ -17,5 +17,9 @@ class Store extends Model
         'image_url',
         'user_id',
         'status',
+        'google_maps_url',   // ★【追加】
+        'opening_hours',  // ★【追加】
+        'url',            // ★【追加】
+        'memo',           // ★【追加】
     ];
 }
