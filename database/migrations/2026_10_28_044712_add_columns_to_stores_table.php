@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::table('stores', function (Blueprint $table) {
             // ユーザーIDを追加
             // foreignId('user_id'):user_id カラムを作成する
-            $table->foreignId('user_id')
+            $table->foreignId('user_id')->nullable()
                 //constrained('users')：users テーブルの id と関連付ける
                 ->constrained('users')
                 //     cascadeOnDelete()：関連するユーザーが削除されたら、そのユーザーのお店データも削除する
