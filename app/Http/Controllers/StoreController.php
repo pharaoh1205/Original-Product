@@ -44,7 +44,7 @@ class StoreController extends Controller
         return view('stores.finalcreate', compact('imageUrl', 'tempPath'));
     }
 
-    
+
 
 
     // ❶【非同期】画像が選択された瞬間にS3の tmp フォルダへ一時保存する
@@ -75,40 +75,33 @@ class StoreController extends Controller
     // ❷【本番保存】文字列と一時パスを受け取り、S3でファイルを移動してDBに保存する
     public function store(Request $request)
     {
-        // バリデーション（文字列情報と、JSから送られてくる一時パスを検証）
+        // 1. バリデーションに memo と opening_hours を追加する
         $request->validate([
-            'store_name' => 'required|string|max:255', // 例：店舗名などの他の文字列情報
-            'temp_path' => 'required|string',    // 例：tmp/xxxxxxx.jpg (S3に一時保存した画像の場所を表す文字列)
+            'store_name'    => 'required|string|max:255',
+            'temp_path'     => 'required|string',
+            'memo'          => 'nullable|string', // 追加
+            'opening_hours' => 'nullable|string', // 追加
         ]);
 
-        // 一時保存先のパスを取得する
         $tempPath = $request->input('temp_path');
 
-        // S3上に一時ファイルが実際に存在するか確認
         if (Storage::disk('s3')->exists($tempPath)) {
-
-            // ファイル名を取得し、本番用の保存先パスを組み立てる（例: stores/ フォルダへ）
             $filename = basename($tempPath);
             $finalPath = 'stores/' . $filename;
 
-            // ★ S3上でファイルを「一時保存(tmp)」から「本番用(stores)」へ移動する
             Storage::disk('s3')->move($tempPath, $finalPath);
 
-            // データベースに保存する処理
+            // 2. Store::create に memo と opening_hours を追加する
             Store::create([
-                'store_name' => $request->input('store_name'),
-                'image_path' => $finalPath, // 正式な保存先パスをDBに記録
-                // 'user_id'    => 1, // 一時的に固定値をいれる、または行を消す
+                'store_name'    => $request->input('store_name'),
+                'image_path'    => $finalPath,
+                'memo'          => $request->input('memo'),          // 追加
+                'opening_hours' => $request->input('opening_hours'), // 追加
             ]);
         } else {
             return back()->withErrors(['temp_path' => '画像の一時保存データが見つかりませんでした。もう一度やり直してください。']);
         }
 
-        // ★リダイレクトする直前の内容を確認する
-        // dd(
-        //     session()->all(), // 現在のセッションに入っているすべてのデータを確認
-        //     '情報を正式に登録しました！'
-        // );
         return redirect()->route('stores.create')->with('success', '情報を正式に登録しました！');
     }
 }
