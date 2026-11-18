@@ -14,6 +14,18 @@
     <div class="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-gray-800">行きたいお店の登録</h2>
 
+        {{-- 仮で作成した検索文字入力欄 --}}
+        <div>
+            <label for="store-search-input" class="block text-sm font-bold text-slate-600 mb-1.5">
+                店名
+            </label>
+            <input
+                type="text"
+                id="store-search-input"
+                placeholder="店名を入力"
+                class="w-full px-4 py-3 bg-[#b4c6e7]/70 border border-slate-400 rounded-xl text-gray-800 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+        </div>
+
         <!-- セッションに保存された「成功メッセージ（success）」が存在する場合、緑色の成功アラートとして画面に表示する処理 -->
         @if(session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
@@ -39,11 +51,16 @@
                 </div>
             </div>
 
+            <!-- 検索候補（結果）を表示するエリア -->
+            <div id="search-results" style="margin-top: 10px;"></div>
+
             {{-- ▼ 【変更】「登録する」ボタンを消し、右下の「検索」「手動で入力」ボタンのみを配置 --}}
             <div class="flex items-center justify-end space-x-2">
-                <a href="#" id="search-btn" class="bg-blue-500 text-white py-3 px-6 rounded-lg font-bold hover:bg-blue-600 transition text-sm text-center">
+                <!-- <a href="#" id="search-btn" class="btn btn-primary bg-blue-500 text-white py-3 px-6 rounded-lg font-bold hover:bg-blue-600 transition text-sm text-center">
                     検索
-                </a>
+                </a> -->
+                <!-- 検索ボタン -->
+                <button type="button" id="search-btn" class="btn btn-primary bg-blue-500 text-white py-3 px-6 rounded-lg font-bold hover:bg-blue-600 transition text-sm text-center">検索</button>
                 <a href="{{ route('stores.finalcreate') }}" id="manual-input-btn" class="bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-bold hover:bg-gray-300 transition text-sm text-center">
                     手動で入力
                 </a>
@@ -98,6 +115,43 @@
                         console.error('Error:', error);
                         alert('通信エラーが発生しました。');
                     });
+            });
+        </script>
+
+        <!-- /JavaScriptの便利な拡張ライブラリである「jQuery（ジェイクエリー）」のプログラム本体を、インターネット上の公開サーバー（CDN）経由で自分のホームページ（HTML）に読み込ませる -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            // 「検索」ボタンがクリックされたときに関数を実行する
+            $('#search-btn').on('click', function() {
+                let keyword = $('#store-search-input').val(); // 入力値を取得
+
+                // 空文字チェック
+                if (!keyword.trim()) {
+                    alert('店名を入力してください');
+                    return;
+                }
+
+                // LaravelのAPIへリクエストを送信
+                $.get('/api/search-places', {
+                    query: keyword
+                }, function(data) {
+                    let resultsHtml = '<ul>';
+                    if (data.places && data.places.length > 0) {
+                        data.places.forEach(function(place) {
+                            let name = place.displayName ? place.displayName.text : '名称不明';
+                            // リスト項目に place_id を data-id として持たせる
+                            resultsHtml += `<li data-id="${place.id}">${name} (ID: ${place.id})</li>`;
+                        });
+                    } else {
+                        resultsHtml += '<li>該当する店舗が見つかりませんでした</li>';
+                    }
+                    resultsHtml += '</ul>';
+
+                    // 検索候補エリアに結果を描画
+                    $('#search-results').html(resultsHtml);
+                }).fail(function() {
+                    alert('通信に失敗しました。');
+                });
             });
         </script>
 </body>

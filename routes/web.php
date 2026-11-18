@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\External\GooglemapApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,4 +23,8 @@ Route::post('/stores/upload-image', [StoreController::class, 'uploadImage'])->na
 // 2. 【追加】最終的なデータ（店舗名と画像パスなど）をデータベースに保存するルート
 Route::post('/stores', [StoreController::class, 'store'])->name('stores.store');
 
+// MAP画面を表示(MVPに含まれないので一旦後回し)
 Route::get('/map', [MapController::class, 'index']);
+
+// Google Place APIで検索しお店の候補を表示
+Route::get('/api/search-places', [GooglemapApiController::class, 'search'])->name('google.search');
