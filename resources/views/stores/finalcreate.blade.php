@@ -29,12 +29,10 @@
                 <a href="#" class="flex items-center text-lg text-gray-700 font-medium hover:text-teal-600">
                     <span class="mr-3">📅</span>百名店
                 </a>
+                <a href="#" class="flex items-center text-lg text-gray-700 font-medium hover:text-teal-600">
+                    <span class="mr-3">👤</span>アカウント
+                </a>
             </nav>
-        </div>
-        <div>
-            <a href="#" class="flex items-center text-lg text-gray-700 font-medium hover:text-teal-600">
-                <span class="mr-3">👤</span>アカウント
-            </a>
         </div>
     </aside>
 
@@ -46,6 +44,8 @@
 
             {{-- ▼ ここに一時パスを保持する隠しフィールドを追加 --}}
             <input type="hidden" name="temp_path" value="{{ $tempPath ?? '' }}">
+            {{-- ▼ place_id を送信するための隠しフィールド --}}
+            <input type="hidden" name="place_id" value="{{ $placeId ?? '' }}">
 
             <!-- 写真プレビューエリア -->
             <div class="relative w-full h-64 bg-gray-200 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center cursor-pointer overflow-hidden mb-8 shadow-sm" id="drop-zone">
@@ -67,16 +67,16 @@
                     <div class="flex-1 h-0.5 bg-blue-200"></div>
                 </div>
 
-                <!-- 店名（※コントローラーのバリデーションに合わせて name="store_name" に変更しました） -->
+                <!-- 店名（手動入力用） -->
                 <div class="mb-4">
                     <label class="block text-xs font-bold text-gray-500 mb-1">店名</label>
-                    <input type="text" name="store_name" required class="w-full bg-blue-100/60 border border-blue-300 rounded-md p-2.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <input type="text" name="store_name" class="w-full bg-blue-100/60 border border-blue-300 rounded-md p-2.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
                 </div>
 
-                <!-- 経路 -->
+                <!-- 経路（GoogleマップURLを初期値としてセット） -->
                 <div class="mb-4">
                     <label class="block text-xs font-bold text-gray-500 mb-1">経路</label>
-                    <input type="text" name="route" placeholder="Place IDを使ってGoogleマップのURLを自動生成" class="w-full bg-blue-100/60 border border-blue-300 rounded-md p-2.5 text-red-500 placeholder-red-500 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <input type="text" name="route" value="{{ $mapUrl ?? '' }}" placeholder="Place IDを使ってGoogleマップのURLを自動生成" class="w-full bg-blue-100/60 border border-blue-300 rounded-md p-2.5 text-red-500 placeholder-red-500 focus:outline-none focus:ring-2 focus:ring-blue-400">
                 </div>
 
                 <!-- 営業時間 -->

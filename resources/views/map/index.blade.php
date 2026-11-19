@@ -6,10 +6,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>行きたいお店リスト</title>
+    <title>MAP表示画面</title>
 </head>
 <body>
-    <h1>行きたいお店リストMAP</h1>
-    <p>お気に入りのレストランやカフェを管理しましょう。</p>
+    <h1>MAP表示画面</h1>
+    <p>一旦後回しでOK</p>
 </body>
 </html>

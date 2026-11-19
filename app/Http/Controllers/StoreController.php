@@ -16,6 +16,11 @@ class StoreController extends Controller
         // stores というフォルダの中にある、index.blade.php (一覧画面)というファイルを表示
     }
 
+    public function showbest100()
+    {
+        return view('best100');
+        
+    }
     public function showcreate()
     {
         return view('stores.create');
@@ -25,23 +30,25 @@ class StoreController extends Controller
     public function finalcreate(Request $request)
     {
         $tempPath = $request->query('temp_path');
+        $placeId = $request->query('place_id');
+        // 【追加】クエリパラメータから place_id を取得
         $imageUrl = null;
+        $mapUrl = null; // 【追加】GoogleマップURL用の変数
 
         if ($tempPath && Storage::disk('s3')->exists($tempPath)) {
-            // if の中身は、真ん中の &&（かつ） で大きく左右の2つの条件に分かれている
-            // $tempPath （左側の条件：パスがちゃんと存在するか？）
-            // Storage::disk('s3')->exists($tempPath) （右側の条件：S3の中にそのファイルが本当にあるか？）
-
-            // ★ S3から数分間だけアクセスできる「署名付きURL」を生成する（例: 有効期限20分）
             $imageUrl = Storage::disk('s3')->temporaryUrl(
                 $tempPath,
                 now()->addMinutes(20)
             );
         }
-        // ★ ここで中身を画面に強制表示して止めてみる
-        // dd($tempPath, Storage::disk('s3')->exists($tempPath), $imageUrl);
 
-        return view('stores.finalcreate', compact('imageUrl', 'tempPath'));
+        // 【追加】place_id がある場合、GoogleマップのURLを生成
+        if ($placeId) {
+            $mapUrl = "https://www.google.com/maps/search/?api=1&query_place_id=" . $placeId;
+        }
+
+        // 【変更】$mapUrl と $placeId もビューへ渡す
+        return view('stores.finalcreate', compact('imageUrl', 'tempPath', 'mapUrl', 'placeId'));
     }
 
 

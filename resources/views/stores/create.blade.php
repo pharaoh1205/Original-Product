@@ -131,28 +131,66 @@
                     return;
                 }
 
-                // LaravelのAPIへリクエストを送信
+                // LaravelのAPIへリクエストを送信　
+                //コールバック関数→通信が終わったあと（成功時）に呼ばれる
                 $.get('/api/search-places', {
                     query: keyword
                 }, function(data) {
-                    let resultsHtml = '<ul>';
+
+                    // 【変更】リスト全体にTailwindのスタイルを付与
+                    let resultsHtml = '<ul class="bg-white border border-gray-300 rounded-lg mt-2 shadow-md divide-y divide-gray-200">';
+
+                    //コールバック関数→配列の中身を1つ取り出すたびに呼ばれる
                     if (data.places && data.places.length > 0) {
                         data.places.forEach(function(place) {
                             let name = place.displayName ? place.displayName.text : '名称不明';
-                            // リスト項目に place_id を data-id として持たせる
-                            resultsHtml += `<li data-id="${place.id}">${name} (ID: ${place.id})</li>`;
+                            let placeId = place.id; // 【追加】Place IDを変数に取得
+
+                            // 【変更】ホバー・ポインター・識別クラス(.place-item)を付与（store_nameは持ち込まない）
+                            resultsHtml += `<li class="p-3 hover:bg-blue-50 cursor-pointer place-item" data-id="${placeId}">${name}</li>`;
                         });
                     } else {
-                        resultsHtml += '<li>該当する店舗が見つかりませんでした</li>';
+                        // 【変更】空の場合のリストにも余白と文字色を付与
+                        resultsHtml += '<li class="p-3 text-gray-500">該当する店舗が見つかりませんでした</li>';
                     }
+
                     resultsHtml += '</ul>';
 
                     // 検索候補エリアに結果を描画
                     $('#search-results').html(resultsHtml);
+
+                    // コールバック関数 → 通信が失敗したときに呼ばれる
                 }).fail(function() {
                     alert('通信に失敗しました。');
                 });
+            }); // ← ここで #search-btn のクリック処理を閉じる
+
+            // 【追加】検索候補クリック時に temp_path と place_id を付けて finalcreate へ遷移
+            $(document).on('click', '.place-item', function() {
+            let placeId = $(this).data('id');
+
+            let manualBtnHref = $('#manual-input-btn').attr('href');
+            let tempPathMatch = manualBtnHref ? manualBtnHref.match(/temp_path=([^&]+)/) : null;
+            let tempPath = tempPathMatch ? tempPathMatch[1] : '';
+
+            let targetUrl = "{{ route('stores.finalcreate') }}";
+            let params = [];
+
+            if (tempPath) {
+                params.push(`temp_path=${tempPath}`);
+            }
+
+            if (placeId) {
+                params.push(`place_id=${placeId}`);
+            }
+
+            if (params.length > 0) {
+                targetUrl += '?' + params.join('&');
+            }
+
+            window.location.href = targetUrl;
             });
+        
         </script>
 </body>
 
