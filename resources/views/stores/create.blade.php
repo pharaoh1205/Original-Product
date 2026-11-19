@@ -165,32 +165,36 @@
                 });
             }); // ← ここで #search-btn のクリック処理を閉じる
 
-            // 【追加】検索候補クリック時に temp_path と place_id を付けて finalcreate へ遷移
+            // 検索候補クリック時に temp_path、place_id、query を付けて finalcreate へ遷移
             $(document).on('click', '.place-item', function() {
-            let placeId = $(this).data('id');
+                let placeId = $(this).data('id');
+                let searchQuery = $('#store-search-input').val().trim();
 
-            let manualBtnHref = $('#manual-input-btn').attr('href');
-            let tempPathMatch = manualBtnHref ? manualBtnHref.match(/temp_path=([^&]+)/) : null;
-            let tempPath = tempPathMatch ? tempPathMatch[1] : '';
+                let manualBtnHref = $('#manual-input-btn').attr('href');
+                let tempPathMatch = manualBtnHref ? manualBtnHref.match(/temp_path=([^&]+)/) : null;
+                let tempPath = tempPathMatch ? tempPathMatch[1] : '';
 
-            let targetUrl = "{{ route('stores.finalcreate') }}";
-            let params = [];
+                let targetUrl = "{{ route('stores.finalcreate') }}";
+                let params = [];
 
-            if (tempPath) {
-                params.push(`temp_path=${tempPath}`);
-            }
+                if (tempPath) {
+                    params.push(`temp_path=${tempPath}`);
+                }
 
-            if (placeId) {
-                params.push(`place_id=${placeId}`);
-            }
+                if (placeId) {
+                    params.push(`place_id=${encodeURIComponent(placeId)}`);
+                }
 
-            if (params.length > 0) {
-                targetUrl += '?' + params.join('&');
-            }
+                if (searchQuery) {
+                    params.push(`query=${encodeURIComponent(searchQuery)}`);
+                }
 
-            window.location.href = targetUrl;
+                if (params.length > 0) {
+                    targetUrl += '?' + params.join('&');
+                }
+
+                window.location.href = targetUrl;
             });
-        
         </script>
 </body>
 

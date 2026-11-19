@@ -19,7 +19,6 @@ class StoreController extends Controller
     public function showbest100()
     {
         return view('best100');
-        
     }
     public function showcreate()
     {
@@ -31,9 +30,10 @@ class StoreController extends Controller
     {
         $tempPath = $request->query('temp_path');
         $placeId = $request->query('place_id');
-        // 【追加】クエリパラメータから place_id を取得
+        $searchQuery = $request->query('query');
+
         $imageUrl = null;
-        $mapUrl = null; // 【追加】GoogleマップURL用の変数
+        $mapUrl = null;
 
         if ($tempPath && Storage::disk('s3')->exists($tempPath)) {
             $imageUrl = Storage::disk('s3')->temporaryUrl(
@@ -42,13 +42,27 @@ class StoreController extends Controller
             );
         }
 
-        // 【追加】place_id がある場合、GoogleマップのURLを生成
-        if ($placeId) {
-            $mapUrl = "https://www.google.com/maps/search/?api=1&query_place_id=" . $placeId;
+        // 入力キーワード（query）がある場合を軸にGoogleマップURLを生成
+        if ($searchQuery) {
+            $mapParams = [
+                'api'   => '1',
+                'query' => $searchQuery,
+            ];
+
+            if ($placeId) {
+                $mapParams['query_place_id'] = $placeId;
+            }
+
+            $mapUrl = 'https://www.google.com/maps/search/?' . http_build_query($mapParams);
         }
 
-        // 【変更】$mapUrl と $placeId もビューへ渡す
-        return view('stores.finalcreate', compact('imageUrl', 'tempPath', 'mapUrl', 'placeId'));
+        return view('stores.finalcreate', compact(
+            'imageUrl',
+            'tempPath',
+            'mapUrl',
+            'placeId',
+            'searchQuery'
+        ));
     }
 
 
