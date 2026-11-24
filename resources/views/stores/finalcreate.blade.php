@@ -67,11 +67,15 @@
                     <div class="flex-1 h-0.5 bg-blue-200"></div>
                 </div>
 
-                <!-- 店名（手動入力用） -->
+                <!-- 店名（検索キーワードを初期値として自動入力） -->
                 <div class="mb-4">
                     <label class="block text-xs font-bold text-gray-500 mb-1">店名</label>
-                    <input type="text" name="store_name" class="w-full bg-blue-100/60 border border-blue-300 rounded-md p-2.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                </div>
+                    <input
+                        type="text"
+                        name="store_name"
+                        value="{{ $searchQuery ?? '' }}"
+                        class="w-full bg-blue-100/60 border border-blue-300 rounded-md p-2.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div> 
 
                 <!-- 経路（GoogleマップURLを初期値としてセット） -->
                 <div class="mb-4">

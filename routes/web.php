@@ -35,3 +35,6 @@ Route::get('/map', [MapController::class, 'index'])->name('map.index');
 
 // Google Place APIで検索しお店の候補を表示
 Route::get('/api/search-places', [GooglemapApiController::class, 'search'])->name('google.search');
+
+// S３に一時保存した画像をOCR処理し画像内の文字列を取得
+Route::post('/stores/ocr', [StoreController::class, 'extractTextFromImage'])->name('stores.ocr');

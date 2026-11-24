@@ -101,11 +101,34 @@
                     .then(data => {
                         statusDiv.classList.add('hidden');
                         if (data.success) {
-                            // ▼ 【修正】隠しフィールドへの代入は削除
                             // ③ 「手動で入力」ボタンのリンク先に ?temp_path=xxx を付与する
                             const manualBtn = document.getElementById('manual-input-btn');
                             const baseUrl = "{{ route('stores.finalcreate') }}";
                             manualBtn.href = `${baseUrl}?temp_path=${encodeURIComponent(data.temp_path)}`;
+
+                            // OCR専用エンドポイントを呼び出し（①〜⑥の実行）
+                            fetch("{{ route('stores.ocr') }}", {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json', //JSON形式で送りますよ
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}' //Laravelの正規リクエストですよ
+                                    },
+                                    body: JSON.stringify({
+                                        temp_path: data.temp_path
+                                    })
+                                })
+                                .then(res => res.json())
+                                .then(ocrData => {
+                                    if (ocrData.success) {
+                                        console.log('OCR結果:', ocrData.ocr_text);
+                                        // 必要に応じて検索入力欄へ反映したり、次のGemini抽出処理へ渡したりできます
+                                    } else {
+                                        console.error('OCR失敗:', ocrData.message);
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error('OCR通信エラー:', err);
+                                });
                         } else {
                             alert('一時アップロードに失敗しました: ' + (data.message || ''));
                         }
