@@ -4,6 +4,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\External\GooglemapApiController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\External\OcrController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -37,4 +38,4 @@ Route::get('/map', [MapController::class, 'index'])->name('map.index');
 Route::get('/api/search-places', [GooglemapApiController::class, 'search'])->name('google.search');
 
 // S３に一時保存した画像をOCR処理し画像内の文字列を取得
-Route::post('/stores/ocr', [StoreController::class, 'extractTextFromImage'])->name('stores.ocr');
+Route::post('/api/ocr', [OcrController::class, 'extractTextFromImage'])->name('ocr.extract');

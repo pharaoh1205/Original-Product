@@ -107,7 +107,7 @@
                             manualBtn.href = `${baseUrl}?temp_path=${encodeURIComponent(data.temp_path)}`;
 
                             // OCR専用エンドポイントを呼び出し（①〜⑥の実行）
-                            fetch("{{ route('stores.ocr') }}", {
+                            fetch("{{ route('ocr.extract') }}", {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json', //JSON形式で送りますよ
