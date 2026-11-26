@@ -122,8 +122,40 @@
                                     if (ocrData.success) {
                                         console.log('OCR結果:', ocrData.ocr_text);
                                         // 必要に応じて検索入力欄へ反映したり、次のGemini抽出処理へ渡したりできます
+
+                                        // OCRで取得した文字列をLLMへ送り、店名を抽出する
+                                        return fetch("{{ route('llm.extractStoreName') }}", {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                            },
+                                            body: JSON.stringify({
+                                                ocr_text: ocrData.ocr_text || ''
+                                            })
+                                        });
                                     } else {
                                         console.error('OCR失敗:', ocrData.message);
+                                        return null;
+                                    }
+                                })
+                                .then(res => res ? res.json() : null)
+                                .then(llmData => {
+                                    if (!llmData) {
+                                        return;
+                                    }
+
+                                    if (llmData.success) {
+                                        console.log('抽出店名:', llmData.store_name);
+
+                                        if (llmData.store_name && llmData.store_name.trim() !== '') {
+                                            const extractedName = llmData.store_name.trim();
+
+                                            $('#store-search-input').val(extractedName);
+                                            runPlaceSearch(extractedName);
+                                        }
+                                    } else {
+                                        console.error('店名抽出失敗:', llmData.message);
                                     }
                                 })
                                 .catch(err => {
@@ -144,36 +176,28 @@
         <!-- /JavaScriptの便利な拡張ライブラリである「jQuery（ジェイクエリー）」のプログラム本体を、インターネット上の公開サーバー（CDN）経由で自分のホームページ（HTML）に読み込ませる -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            // 「検索」ボタンがクリックされたときに関数を実行する
-            $('#search-btn').on('click', function() {
-                let keyword = $('#store-search-input').val(); // 入力値を取得
-
+            // 店舗検索APIを呼び出して候補一覧を描画する関数
+            function runPlaceSearch(keyword) {
                 // 空文字チェック
                 if (!keyword.trim()) {
                     alert('店名を入力してください');
                     return;
                 }
 
-                // LaravelのAPIへリクエストを送信　
-                //コールバック関数→通信が終わったあと（成功時）に呼ばれる
+                // LaravelのAPIへリクエストを送信
                 $.get('/api/search-places', {
                     query: keyword
                 }, function(data) {
-
-                    // 【変更】リスト全体にTailwindのスタイルを付与
                     let resultsHtml = '<ul class="bg-white border border-gray-300 rounded-lg mt-2 shadow-md divide-y divide-gray-200">';
 
-                    //コールバック関数→配列の中身を1つ取り出すたびに呼ばれる
                     if (data.places && data.places.length > 0) {
                         data.places.forEach(function(place) {
                             let name = place.displayName ? place.displayName.text : '名称不明';
-                            let placeId = place.id; // 【追加】Place IDを変数に取得
+                            let placeId = place.id;
 
-                            // 【変更】ホバー・ポインター・識別クラス(.place-item)を付与（store_nameは持ち込まない）
                             resultsHtml += `<li class="p-3 hover:bg-blue-50 cursor-pointer place-item" data-id="${placeId}">${name}</li>`;
                         });
                     } else {
-                        // 【変更】空の場合のリストにも余白と文字色を付与
                         resultsHtml += '<li class="p-3 text-gray-500">該当する店舗が見つかりませんでした</li>';
                     }
 
@@ -181,12 +205,17 @@
 
                     // 検索候補エリアに結果を描画
                     $('#search-results').html(resultsHtml);
-
-                    // コールバック関数 → 通信が失敗したときに呼ばれる
                 }).fail(function() {
                     alert('通信に失敗しました。');
                 });
-            }); // ← ここで #search-btn のクリック処理を閉じる
+            }
+
+            // 「検索」ボタンがクリックされたときに関数を実行する
+            $('#search-btn').on('click', function() {
+                let keyword = $('#store-search-input').val(); // 入力値を取得
+                runPlaceSearch(keyword);
+            });
+
 
             // 検索候補クリック時に temp_path、place_id、query を付けて finalcreate へ遷移
             $(document).on('click', '.place-item', function() {

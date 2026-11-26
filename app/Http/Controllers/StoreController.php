@@ -114,13 +114,14 @@ class StoreController extends Controller
 
             Storage::disk('s3')->move($tempPath, $finalPath);
 
-            // 2. Store::create に memo と opening_hours を追加する
+            // create() メソッド: 渡された連想配列をもとに、新しいレコード（行）をデータベースに1件追加（INSERT）するメソッド
             Store::create([
                 'store_name'    => $request->input('store_name'),
                 'image_path'    => $finalPath,
                 'memo'          => $request->input('memo'),          // 追加
                 'opening_hours' => $request->input('opening_hours'), // 追加
                 'route'         => $request->input('route'),
+                // image_path などの左側（キー）が、データベース（stores テーブル）のカラム名を表している
             ]);
         } else {
             return back()->withErrors(['temp_path' => '画像の一時保存データが見つかりませんでした。もう一度やり直してください。']);

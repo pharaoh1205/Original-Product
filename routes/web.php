@@ -5,6 +5,7 @@ use App\Http\Controllers\StoreController;
 use App\Http\Controllers\External\GooglemapApiController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\External\OcrController;
+use App\Http\Controllers\External\LlmController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -39,3 +40,6 @@ Route::get('/api/search-places', [GooglemapApiController::class, 'search'])->nam
 
 // S３に一時保存した画像をOCR処理し画像内の文字列を取得
 Route::post('/api/ocr', [OcrController::class, 'extractTextFromImage'])->name('ocr.extract');
+
+// OCR文字列からGemini APIで店名を抽出
+Route::post('/api/extract-store-name', [LlmController::class, 'extractStoreName'])->name('llm.extractStoreName');
