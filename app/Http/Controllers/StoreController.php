@@ -94,41 +94,48 @@ class StoreController extends Controller
 
 
 
-    // ❷【本番保存】文字列と一時パスを受け取り、S3でファイルを移動してDBに保存する
-    public function store(Request $request)
-    {
-        // 1. バリデーションに memo と opening_hours を追加する
+        // ❷【本番保存】文字列と一時パスを受け取り、S3でファイルを移動してDBに保存する
+    public function store(Request $request){
+        // 文字揺れの原因究明
+        // \Log::info('store_name check:', ['store_name' => $request->input('store_name')]);
+
+        // 左側の'google_maps_url'はnameの中身
         $request->validate([
-            'store_name'    => 'required|string|max:255',
-            'temp_path'     => 'required|string',
-            'memo'          => 'nullable|string', // 追加
-            'opening_hours' => 'nullable|string', // 追加
-            'route'        => 'nullable|string|url',
+            'store_name'      => 'required|string|max:255',
+            'temp_path'       => 'nullable|string',
+            'memo'            => 'nullable|string', // 追加
+            'opening_hours'   => 'nullable|string', // 追加
+            'google_maps_url' => 'nullable|string|url',
         ]);
 
         $tempPath = $request->input('temp_path');
+        $finalPath = null;
 
-        if (Storage::disk('s3')->exists($tempPath)) {
-            $filename = basename($tempPath);
-            $finalPath = 'stores/' . $filename;
+        if (!empty($tempPath)) {
+            if (Storage::disk('s3')->exists($tempPath)) {
+                $filename = basename($tempPath);
+                $finalPath = 'stores/' . $filename;
 
-            Storage::disk('s3')->move($tempPath, $finalPath);
-
-            // create() メソッド: 渡された連想配列をもとに、新しいレコード（行）をデータベースに1件追加（INSERT）するメソッド
-            Store::create([
-                'store_name'    => $request->input('store_name'),
-                'image_path'    => $finalPath,
-                'memo'          => $request->input('memo'),          // 追加
-                'opening_hours' => $request->input('opening_hours'), // 追加
-                'route'         => $request->input('route'),
-                // image_path などの左側（キー）が、データベース（stores テーブル）のカラム名を表している
-            ]);
-        } else {
-            return back()->withErrors(['temp_path' => '画像の一時保存データが見つかりませんでした。もう一度やり直してください。']);
+                Storage::disk('s3')->move($tempPath, $finalPath);
+            } else {
+                return back()
+                    ->withInput()
+                    ->withErrors(['temp_path' => '画像の一時保存データが見つかりませんでした。もう一度やり直してください。']);
+            }
         }
+
+        \Log::info('before create:', ['store_name' => $request->input('store_name')]);
+        // create() メソッド: 渡された連想配列をもとに、新しいレコード（行）をデータベースに1件追加（INSERT）するメソッド
+        Store::create([
+            'store_name'      => $request->input('store_name'),
+            'image_path'      => $finalPath, // 画像なしの場合は null
+            'memo'            => $request->input('memo'),          // 追加
+            'opening_hours'   => $request->input('opening_hours'), // 追加
+            'google_maps_url' => $request->input('google_maps_url'),
+            // image_path などの左側（キー）が、データベース（stores テーブル）のカラム名を表している
+        ]);
 
         return redirect()->route('stores.create')->with('success', '情報を正式に登録しました！');
     }
-
     
 }

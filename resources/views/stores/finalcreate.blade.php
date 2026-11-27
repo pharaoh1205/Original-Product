@@ -80,7 +80,7 @@
                 <!-- 経路（GoogleマップURLを初期値としてセット） -->
                 <div class="mb-4">
                     <label class="block text-xs font-bold text-gray-500 mb-1">経路</label>
-                    <input type="text" name="route" value="{{ $mapUrl ?? '' }}" placeholder="Place IDを使ってGoogleマップのURLを自動生成" class="w-full bg-blue-100/60 border border-blue-300 rounded-md p-2.5 text-red-500 placeholder-red-500 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <input type="text" name="google_maps_url" value="{{ $mapUrl ?? '' }}" placeholder="Place IDを使ってGoogleマップのURLを自動生成" class="w-full bg-blue-100/60 border border-blue-300 rounded-md p-2.5 text-red-500 placeholder-red-500 focus:outline-none focus:ring-2 focus:ring-blue-400">
                 </div>
 
                 <!-- 営業時間 -->

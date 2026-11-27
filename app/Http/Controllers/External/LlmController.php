@@ -32,7 +32,7 @@ class LlmController extends Controller
             }
 
             // 第2引数で「デフォルト値」を保証
-            $geminiModel = 'gemini-3.8-flash';
+            $geminiModel = 'gemini-3.5-flash-lite';
             $geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/{$geminiModel}:generateContent?key=" . urlencode($geminiApiKey);
 
             $prompt = "次のOCRテキストから飲食店・店舗の「店名」だけを抽出してください。\n"
