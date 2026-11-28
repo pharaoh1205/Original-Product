@@ -13,7 +13,8 @@ class StoreController extends Controller
 {
     public function index()
     {
-        return view('stores.index');
+        $stores = Store::latest()->get();
+        return view('stores.index', compact('stores'));
         // stores というフォルダの中にある、index.blade.php (一覧画面)というファイルを表示
     }
 
@@ -92,8 +93,6 @@ class StoreController extends Controller
 
 
 
-
-
         // ❷【本番保存】文字列と一時パスを受け取り、S3でファイルを移動してDBに保存する
     public function store(Request $request){
         // 文字揺れの原因究明
@@ -124,8 +123,7 @@ class StoreController extends Controller
             }
         }
 
-        \Log::info('before create:', ['store_name' => $request->input('store_name')]);
-        // create() メソッド: 渡された連想配列をもとに、新しいレコード（行）をデータベースに1件追加（INSERT）するメソッド
+        
         Store::create([
             'store_name'      => $request->input('store_name'),
             'image_path'      => $finalPath, // 画像なしの場合は null
