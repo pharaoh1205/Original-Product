@@ -11,11 +11,39 @@ use Illuminate\Support\Facades\Http;
 
 class StoreController extends Controller
 {
-    public function index()
+    //3つのステータスバーがクリックされた時の表示処理を追加
+    public function index(Request $request)
     {
-        $stores = Store::latest()->get();
+        $status = $request->query('status', 'want');
+        $stores = Store::query()
+            // ① 条件チェック
+            ->when(
+                in_array($status, ['want', 'visited', 'best100'], true),
+                // ② trueのときに動く処理（$statusを持ち込む）
+                function ($query) use ($status) {
+                    // ③ $queryに絞り込み条件を追加
+                    $query->where('status', $status);
+                }
+            )
+            ->latest()
+            ->get();
+
         return view('stores.index', compact('stores'));
         // stores というフォルダの中にある、index.blade.php (一覧画面)というファイルを表示
+    }
+
+    //選択した店舗のステータス（行きたい・行った・百名店など）を更新する処理
+    public function updateStatus(Request $request, Store $store)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:want,visited,best100',
+        ]);
+
+        $store->update([
+            'status' => $validated['status'],
+        ]);
+
+        return redirect()->route('stores.index')->with('success', 'ステータスを変更しました！');
     }
 
     public function showbest100()
@@ -93,8 +121,9 @@ class StoreController extends Controller
 
 
 
-        // ❷【本番保存】文字列と一時パスを受け取り、S3でファイルを移動してDBに保存する
-    public function store(Request $request){
+    // ❷【本番保存】文字列と一時パスを受け取り、S3でファイルを移動してDBに保存する
+    public function store(Request $request)
+    {
         // 文字揺れの原因究明
         // \Log::info('store_name check:', ['store_name' => $request->input('store_name')]);
 
@@ -123,7 +152,7 @@ class StoreController extends Controller
             }
         }
 
-        
+
         Store::create([
             'store_name'      => $request->input('store_name'),
             'image_path'      => $finalPath, // 画像なしの場合は null
@@ -135,5 +164,4 @@ class StoreController extends Controller
 
         return redirect()->route('stores.create')->with('success', '情報を正式に登録しました！');
     }
-    
 }

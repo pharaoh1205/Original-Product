@@ -43,3 +43,6 @@ Route::post('/api/ocr', [OcrController::class, 'extractTextFromImage'])->name('o
 
 // OCR文字列からGemini APIで店名を抽出
 Route::post('/api/extract-store-name', [LlmController::class, 'extractStoreName'])->name('llm.extractStoreName');
+
+// 店舗のステータス（want / visited / best100）を更新
+Route::patch('/stores/{store}/status', [StoreController::class, 'updateStatus'])->name('stores.updateStatus');
